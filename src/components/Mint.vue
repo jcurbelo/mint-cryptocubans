@@ -126,7 +126,7 @@ export default {
       signer: null,
       contract: null,
       abi: ABI.abi,
-      contractAddress: "0x6183428C9Af100FEf0AFc155aCACCB232B5c82AB", // Replace it with your contract address,
+      contractAddress: "0xca9eE3460D84Eac6C2F2284CFe3E3B35A2267d78", // Replace it with your contract address,
       loading: false,
       mounted: false,
       tokens: [],
@@ -199,17 +199,16 @@ export default {
     },
     mint: async function () {
       try {
-        throw new Error("Collection is not ready yet");
-        // this.loading = true;
-        // this.numberOfTokens = Math.min(this.numberOfTokens, this.maxPerMint);
-        // const amount = ethers.utils
-        //   .parseEther(this.price)
-        //   .mul(this.numberOfTokens);
-        // // see https://docs.ethers.io/v5/api/contract/contract/#Contract--write
-        // const tx = await this.contract.mint(this.numberOfTokens, {
-        //   value: amount,
-        // });
-        // await tx.wait();
+        this.loading = true;
+        this.numberOfTokens = Math.min(this.numberOfTokens, this.maxPerMint);
+        const amount = ethers.utils
+          .parseEther(this.price)
+          .mul(this.numberOfTokens);
+        // see https://docs.ethers.io/v5/api/contract/contract/#Contract--write
+        const tx = await this.contract.mint(this.numberOfTokens, {
+          value: amount,
+        });
+        await tx.wait();
       } catch (e) {
         this.openSnackbar(e.message);
       } finally {
