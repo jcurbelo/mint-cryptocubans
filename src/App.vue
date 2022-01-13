@@ -1,5 +1,7 @@
 <template>
-  <mint />
+  <v-app>
+    <mint />
+  </v-app>
 </template>
 
 <script>

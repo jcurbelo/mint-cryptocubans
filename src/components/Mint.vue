@@ -45,14 +45,18 @@
               <p class="tag m-b-4">Cryptocubans</p>
               <h1 class="m-b-5 m-l-3">Mint</h1>
               <div class="seperator-line"></div>
-              <button
+              <v-btn
                 :disabled="loading"
+                :loading="loading"
                 v-if="!user"
                 class="m-t-3 default-button button-filled"
+                elevation="2"
+                rounded
+                x-large
                 v-on:click="connectWallet"
               >
                 CONNECT WALLET
-              </button>
+              </v-btn>
               <div v-else>
                 <div>
                   <p><strong>Address: </strong> {{ user.address }}</p>
@@ -67,20 +71,18 @@
                 </div>
                 <div class="seperator-line"></div>
                 <div>
-                  <input
+                  <v-select
                     :disabled="loading"
-                    type="number"
-                    min="1"
-                    :max="maxPerMint"
+                    :loading="loading"
+                    elevation="2"
+                    rounded
+                    x-large
+                    :items="tokens"
                     v-model="numberOfTokens"
-                  />
-                  <button
-                    :disabled="loading"
-                    class="m-t-3 default-button button-filled default-button"
-                    v-on:click="mint"
-                  >
-                    MINT
-                  </button>
+                    label="MINT"
+                    solo
+                    v-on:change="mint"
+                  ></v-select>
                 </div>
               </div>
             </div>
@@ -108,7 +110,7 @@ export default {
   data: () => {
     return {
       maxPerMint: 0,
-      numberOfTokens: 1,
+      numberOfTokens: null,
       price: 0,
       totalSupply: 0,
       user: null,
@@ -119,6 +121,7 @@ export default {
       contractAddress: "0x6183428C9Af100FEf0AFc155aCACCB232B5c82AB", // Replace it with your contract address,
       loading: false,
       mounted: false,
+      tokens: [],
     };
   },
   methods: {
@@ -171,6 +174,11 @@ export default {
         // Gets max per mint
         this.maxPerMint = await this.contract.maxPerMint();
 
+        // Fills the tokens array with the total supply
+        for (let i = 0; i < this.maxPerMint; i++) {
+          this.tokens.push(i + 1);
+        }
+
         // Gets price
         this.price = ethers.utils.formatEther(await this.contract.price());
       } catch (e) {
@@ -215,5 +223,15 @@ export default {
 
 #cc-gif {
   background-image: url("~@/assets/images/cryptocubans.gif");
+}
+
+.button-filled {
+  background-color: #480058 !important;
+  background: #480058;
+  padding: 0 4.5rem !important;
+  color: #fff !important;
+  font-size: 2em !important;
+  height: 2.5em !important;
+  min-width: none !important;
 }
 </style>
