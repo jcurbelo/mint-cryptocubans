@@ -1,6 +1,14 @@
 <template>
   <div class="white-b" id="main">
     <loading-screen v-if="!mounted" />
+    <v-snackbar v-model="snackbar" :timeout="-1" >
+      {{ snackBarMsg }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="closeSnackbar">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
     <!-- LEFT CONTENT -->
     <div class="left-content noselect">
       <!-- INNER CONTENT -->
@@ -122,6 +130,8 @@ export default {
       loading: false,
       mounted: false,
       tokens: [],
+      snackbar: false,
+      snackBarMsg: "",
     };
   },
   methods: {
@@ -182,7 +192,7 @@ export default {
         // Gets price
         this.price = ethers.utils.formatEther(await this.contract.price());
       } catch (e) {
-        console.log("In Catch Block: Error : ", e.message);
+        this.openSnackbar(e.message);
       } finally {
         this.loading = false;
       }
@@ -200,10 +210,18 @@ export default {
         });
         await tx.wait();
       } catch (e) {
-        console.log("In Catch Block: Error : ", e.message);
+        this.openSnackbar(e.message);
       } finally {
         this.loading = false;
       }
+    },
+    openSnackbar: function (msg) {
+      this.snackbar = true;
+      this.snackBarMsg = msg;
+    },
+    closeSnackbar() {
+      this.snackbar = false;
+      this.snackBarMsg = "";
     },
   },
   beforeMount() {},
@@ -233,5 +251,9 @@ export default {
   font-size: 2em !important;
   height: 2.5em !important;
   min-width: none !important;
+}
+
+.v-snack__wrapper {
+  font-size: 2em !important;
 }
 </style>
