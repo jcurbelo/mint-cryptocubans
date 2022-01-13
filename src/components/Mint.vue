@@ -1,7 +1,7 @@
 <template>
   <div class="white-b" id="main">
     <loading-screen v-if="!mounted" />
-    <v-snackbar v-model="snackbar" :timeout="-1" >
+    <v-snackbar v-model="snackbar" :timeout="-1">
       {{ snackBarMsg }}
       <template v-slot:action="{ attrs }">
         <v-btn color="pink" text v-bind="attrs" @click="closeSnackbar">
@@ -74,8 +74,7 @@
                 <div>
                   <!-- <p><strong>Contract: </strong> {{ contractAddress }}</p> -->
                   <p><strong>NFTs: </strong> {{ totalSupply }} / 1492</p>
-                  <p><strong>Max Per Mint: </strong> {{ maxPerMint }}</p>
-                  <p><strong>Price: </strong> {{ price }} ETH</p>
+                  <p><strong>Price: </strong> {{ price }} ETH + gas</p>
                 </div>
                 <div class="seperator-line"></div>
                 <div>
@@ -170,6 +169,15 @@ export default {
 
         // formats the balance to be in ether
         this.user.balance = ethers.utils.formatEther(this.user.balance);
+        this.user.balance = Math.round(this.user.balance * 1e4) / 1e4;
+
+        // formats the address to be more readable
+        this.user.address = this.user.address.substring(0, 6) +
+          "..." +
+          this.user.address.substring(
+            this.user.address.length - 4,
+            this.user.address.length
+          );
 
         // Loads the contract
         this.contract = new ethers.Contract(
