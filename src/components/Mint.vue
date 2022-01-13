@@ -45,7 +45,7 @@
           <!-- SECTION ( INTRODUCTION ) -->
           <div
             class="section height-100 y-center"
-            style="padding-bottom: 2rem"
+            style="padding-bottom: 2rem; padding-right: 2rem;"
             id="intro"
           >
             <!-- CONTAINER -->
