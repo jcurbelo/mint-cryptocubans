@@ -45,7 +45,7 @@
           <!-- SECTION ( INTRODUCTION ) -->
           <div
             class="section height-100 y-center"
-            style="padding-bottom: 2rem; padding-right: 2rem;"
+            style="padding-bottom: 2rem; padding-right: 2rem"
             id="intro"
           >
             <!-- CONTAINER -->
@@ -78,19 +78,52 @@
                 </div>
                 <div class="seperator-line"></div>
                 <div>
-                  <v-select
-                    :disabled="loading"
-                    :loading="loading"
-                    elevation="2"
-                    rounded
-                    x-large
-                    :items="tokens"
-                    v-model="numberOfTokens"
-                    label="MINT"
-                    solo
-                    v-on:change="mint"
-                  ></v-select>
+                  <v-row>
+                    <v-col>
+                      <v-select
+                        :disabled="loading"
+                        :loading="loading"
+                        elevation="2"
+                        rounded
+                        x-large
+                        :items="tokens"
+                        v-model="numberOfTokens"
+                        label="MINT"
+                        solo
+                        v-on:change="mint"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
                 </div>
+                <div class="seperator-line"></div>
+                <v-row align="center" justify="space-around">
+                  <v-col sm="12" cols="12" md="12">
+                    <v-btn
+                      class="default-button button-filled"
+                      elevation="2"
+                      rounded
+                      x-large
+                      v-on:click="connectWallet"
+                      :href="'https://etherscan.io/token/' + contractAddress"
+                      target="_blank"
+                    >
+                      SMART CONTRACT
+                    </v-btn>
+                  </v-col>
+                  <!-- <v-col sm="12" cols="12" md="6">
+                    <v-btn
+                      class="default-button button-filled"
+                      elevation="2"
+                      rounded
+                      x-large
+                      v-on:click="connectWallet"
+                      :href="'https://etherscan.io/token/' + contractAddress"
+                      target="_blank"
+                    >
+                      OPENSEA
+                    </v-btn>
+                  </v-col> -->
+                </v-row>
               </div>
             </div>
             <!-- /CONTAINER -->
@@ -172,7 +205,8 @@ export default {
         this.user.balance = Math.round(this.user.balance * 1e4) / 1e4;
 
         // formats the address to be more readable
-        this.user.address = this.user.address.substring(0, 6) +
+        this.user.address =
+          this.user.address.substring(0, 6) +
           "..." +
           this.user.address.substring(
             this.user.address.length - 4,
