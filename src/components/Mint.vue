@@ -248,12 +248,11 @@ export default {
   background: #480058;
   padding: 0 4.5rem !important;
   color: #fff !important;
-  font-size: 2em !important;
-  height: 2.5em !important;
+  font-size: 2rem !important;
   min-width: none !important;
 }
 
 .v-snack__wrapper {
-  font-size: 2em !important;
+  font-size: 2rem !important;
 }
 </style>
