@@ -1,5 +1,6 @@
 <template>
   <div class="white-b" id="main">
+    <loading-screen v-if="!mounted" />
     <!-- LEFT CONTENT -->
     <div class="left-content noselect">
       <!-- INNER CONTENT -->
@@ -62,7 +63,7 @@
                   <p><strong>Contract: </strong> {{ contractAddress }}</p>
                   <p><strong>NFTs: </strong> {{ totalSupply }} / 1492</p>
                   <p><strong>Max Per Mint: </strong> {{ maxPerMint }}</p>
-                  <p><strong>Price: </strong> {{ parsedPrice }} ETH</p>
+                  <p><strong>Price: </strong> {{ price }} ETH</p>
                 </div>
                 <div class="seperator-line"></div>
                 <div>
@@ -97,23 +98,27 @@
 <script>
 import { ethers } from "ethers";
 import ABI from "../assets/contract/ABI.json";
+import LoadingScreen from "./LoadingScreen.vue";
 
 export default {
   name: "Mint",
+  components: {
+    "loading-screen": LoadingScreen,
+  },
   data: () => {
     return {
       maxPerMint: 0,
       numberOfTokens: 1,
       price: 0,
-      parsedPrice: 0,
       totalSupply: 0,
       user: null,
       provider: null,
       signer: null,
       contract: null,
       abi: ABI.abi,
-      contractAddress: "0x49640c1327878ca58bd70754a5fb52fbe6a0ce70", // Replace it with your contract address,
+      contractAddress: "0x6183428C9Af100FEf0AFc155aCACCB232B5c82AB", // Replace it with your contract address,
       loading: false,
+      mounted: false,
     };
   },
   methods: {
@@ -161,15 +166,13 @@ export default {
         );
 
         // Gets total supply
-        this.totalSupply = Number(await this.contract.totalSupply());
+        this.totalSupply = await this.contract.totalSupply();
 
         // Gets max per mint
-        this.maxPerMint = Number(await this.contract.maxPerMint());
+        this.maxPerMint = await this.contract.maxPerMint();
 
         // Gets price
-        this.price = await this.contract.price();
-        this.parsedPrice = ethers.utils.formatEther(this.price);
-
+        this.price = ethers.utils.formatEther(await this.contract.price());
       } catch (e) {
         console.log("In Catch Block: Error : ", e.message);
       } finally {
@@ -180,15 +183,12 @@ export default {
       try {
         this.loading = true;
         this.numberOfTokens = Math.min(this.numberOfTokens, this.maxPerMint);
-        const amount = ethers.utils.parseEther(
-          (this.parsedPrice * this.numberOfTokens).toString()
-        );
+        const amount = ethers.utils
+          .parseEther(this.price)
+          .mul(this.numberOfTokens);
         // see https://docs.ethers.io/v5/api/contract/contract/#Contract--write
         const tx = await this.contract.mint(this.numberOfTokens, {
           value: amount,
-        });
-        console.log({
-          tx,
         });
         await tx.wait();
       } catch (e) {
@@ -200,9 +200,7 @@ export default {
   },
   beforeMount() {},
   mounted() {
-    // this.connectWallet();
-    // Remove the loader
-    // document.getElementsByClassName("loading-screen")[0].style.display = "none";
+    this.mounted = true;
   },
 };
 </script>

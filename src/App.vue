@@ -1,5 +1,5 @@
 <template>
-  <Mint />
+  <mint />
 </template>
 
 <script>
@@ -8,7 +8,7 @@ import Mint from "./components/Mint.vue";
 export default {
   name: "App",
   components: {
-    Mint,
+    mint: Mint,
   },
 };
 </script>
