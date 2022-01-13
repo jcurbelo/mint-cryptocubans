@@ -72,7 +72,7 @@
                 </div>
                 <div class="seperator-line"></div>
                 <div>
-                  <p><strong>Contract: </strong> {{ contractAddress }}</p>
+                  <!-- <p><strong>Contract: </strong> {{ contractAddress }}</p> -->
                   <p><strong>NFTs: </strong> {{ totalSupply }} / 1492</p>
                   <p><strong>Max Per Mint: </strong> {{ maxPerMint }}</p>
                   <p><strong>Price: </strong> {{ price }} ETH</p>
@@ -199,16 +199,17 @@ export default {
     },
     mint: async function () {
       try {
-        this.loading = true;
-        this.numberOfTokens = Math.min(this.numberOfTokens, this.maxPerMint);
-        const amount = ethers.utils
-          .parseEther(this.price)
-          .mul(this.numberOfTokens);
-        // see https://docs.ethers.io/v5/api/contract/contract/#Contract--write
-        const tx = await this.contract.mint(this.numberOfTokens, {
-          value: amount,
-        });
-        await tx.wait();
+        throw new Error("Collection is not ready yet");
+        // this.loading = true;
+        // this.numberOfTokens = Math.min(this.numberOfTokens, this.maxPerMint);
+        // const amount = ethers.utils
+        //   .parseEther(this.price)
+        //   .mul(this.numberOfTokens);
+        // // see https://docs.ethers.io/v5/api/contract/contract/#Contract--write
+        // const tx = await this.contract.mint(this.numberOfTokens, {
+        //   value: amount,
+        // });
+        // await tx.wait();
       } catch (e) {
         this.openSnackbar(e.message);
       } finally {
