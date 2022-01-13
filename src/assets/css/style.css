@@ -1326,25 +1326,25 @@ select:-webkit-autofill:focus {
 }
 
 .right-content {
-    position: fixed;
+    /* position: fixed;
     width: 100%;
     overflow: auto;
-    height: 100%;
+    height: 100%; */
 }
 
 .right-content .inner-content {
-    position: relative;
-    width: 50%;
-    left: 50%;
+    /* position: relative; */
+    /* width: 50%; */
+    /* left: 50%; */
 }
 
 _:-ms-fullscreen,
 :root .right-content .inner-content {
-    position: fixed;
+    /* position: fixed; */
 }
 
 .left-content {
-    position: fixed;
+    /* position: fixed;
     height: 100%;
     width: 50%;
     top: 0%;
@@ -1359,11 +1359,11 @@ _:-ms-fullscreen,
     align-items: center;
     z-index: 2;
     -webkit-perspective: 38rem;
-    perspective: 38rem;
+    perspective: 38rem; */
 }
 
 .left-content .inner-content {
-    position: relative;
+    /* position: relative; */
     width: 26vw;
     height: 32vw;
     -webkit-transform: rotateY(5deg);
@@ -1371,7 +1371,7 @@ _:-ms-fullscreen,
 }
 
 .left-content .inner-content .picture-box {
-    position: absolute;
+    position: relative;
     height: 100%;
     width: 100%;
     left: 0;
@@ -1383,28 +1383,26 @@ _:-ms-fullscreen,
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    position: absolute;
+    /* position: absolute; */
     height: 100%;
     width: 100%;
-    left: 0;
-    top: 0px;
+    /* left: 0; */
+    /* top: 0px; */
 }
 
 .left-content .inner-content canvas {
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 100%;
-    top: 1px;
-
-
+    top: -10rem;
     left: 0;
 }
 
 .left-content .inner-content .frame {
-    position: absolute;
+    position: relative;
     height: 100%;
     width: 100%;
-    top: 0;
+    top: -61rem;
     left: 0;
     z-index: -2;
     border: 1px solid #a006a2;
@@ -1419,20 +1417,22 @@ _:-ms-fullscreen,
 
 .left-content .inner-content .frame.frame-2 {
     opacity: 0.60;
+    top: -122rem;
     -webkit-transform: translate(-4rem, 4rem);
     -ms-transform: translate(-4rem, 4rem);
     transform: translate(-4rem, 4rem);
 }
-
+    
 .left-content .inner-content .frame.frame-3 {
     opacity: 0.40;
+    top: -183rem;
     -webkit-transform: translate(-6rem, 6rem);
     -ms-transform: translate(-6rem, 6rem);
     transform: translate(-6rem, 6rem);
 }
 
 .left-content .inner-content .name {
-    position: absolute;
+    position: relative;
     left: 4rem;
     bottom: 3rem;
     z-index: 10;
@@ -1482,66 +1482,6 @@ _:-ms-fullscreen,
     display: block;
     width: 100%;
 }
-
-
-/* Mobile Mode */
-
-.mobile .left-content {
-    width: 100%;
-}
-
-.mobile .left-content .inner-content {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-transform: rotateY(0deg);
-    transform: rotateY(0deg);
-}
-
-.mobile .left-content .inner-content .frame {
-    display: none !important;
-}
-
-.mobile .right-content .inner-content {
-    padding-top: 100vh;
-    position: relative;
-    width: 80%;
-    left: 10%;
-}
-
-.mobile .left-content .inner-content:after {
-    position: absolute;
-    content: "";
-    left: 0;
-    top: 0;
-    z-index: -15;
-    background: rgba(0, 0, 0, 1);
-    width: 100%;
-    height: 100%;
-}
-
-.mobile .left-content .inner-content .name {
-    left: 50%;
-    bottom: 50%;
-    -webkit-transform: translate(-50%, 50%);
-    -ms-transform: translate(-50%, 50%);
-    transform: translate(-50%, 50%);
-}
-
-.mobile .left-content .inner-content .name p {
-    font-size: 4rem;
-}
-
-.mobile .left-content .inner-content .picture-box {
-    opacity: 0.7;
-}
-
-.mobile .section-container {
-    max-width: 60rem;
-    margin: 0 auto;
-}
-
-
 
 /** 9. Background Components
 *******************************************************************/

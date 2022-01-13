@@ -1,6 +1,8 @@
 <template>
   <v-app>
-    <mint />
+    <v-main>
+      <mint />
+    </v-main>
   </v-app>
 </template>
 
