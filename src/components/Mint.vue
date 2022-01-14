@@ -67,13 +67,15 @@
               </v-btn>
               <div v-else>
                 <div>
-                  <p><strong>Address: </strong> {{ user.address }}</p>
+                  <p><strong>Address: </strong> {{ user.formattedAddress }}</p>
                   <p><strong>Balance: </strong> {{ user.balance }}</p>
                 </div>
                 <div class="seperator-line"></div>
                 <div>
                   <!-- <p><strong>Contract: </strong> {{ contractAddress }}</p> -->
-                  <p><strong>NFTs: </strong> {{ totalSupply }} / 1492</p>
+                  <p>
+                    <strong>NFTs: </strong> {{ totalSupply }} / {{ maxAmount }}
+                  </p>
                   <p><strong>Price: </strong> {{ price }} ETH + gas</p>
                 </div>
                 <div class="seperator-line"></div>
@@ -139,6 +141,7 @@
 </template>
 <script>
 import { ethers } from "ethers";
+import axios from "axios";
 import ABI from "../assets/contract/ABI.json";
 import LoadingScreen from "./LoadingScreen.vue";
 
@@ -152,6 +155,7 @@ export default {
       maxPerMint: 0,
       numberOfTokens: null,
       price: 0,
+      maxAmount: 0,
       totalSupply: 0,
       user: null,
       provider: null,
@@ -159,11 +163,13 @@ export default {
       contract: null,
       abi: ABI.abi,
       contractAddress: "0xca9eE3460D84Eac6C2F2284CFe3E3B35A2267d78", // Replace it with your contract address,
+      collectionId: "KkWtXwKdIwQXhTvxrIHU", // Replace it with your Nifty Kit Collection ID,
       loading: false,
       mounted: false,
       tokens: [],
       snackbar: false,
       snackBarMsg: "",
+      presaleActive: false,
     };
   },
   methods: {
@@ -198,6 +204,7 @@ export default {
         this.user = {
           address: await this.signer.getAddress(),
           balance: await this.signer.getBalance(),
+          formattedAddress: "",
         };
 
         // formats the balance to be in ether
@@ -205,7 +212,7 @@ export default {
         this.user.balance = Math.round(this.user.balance * 1e4) / 1e4;
 
         // formats the address to be more readable
-        this.user.address =
+        this.user.formattedAddress =
           this.user.address.substring(0, 6) +
           "..." +
           this.user.address.substring(
@@ -223,8 +230,14 @@ export default {
         // Gets total supply
         this.totalSupply = await this.contract.totalSupply();
 
+        // Gets max amount
+        this.maxAmount = await this.contract.maxAmount();
+
         // Gets max per mint
         this.maxPerMint = await this.contract.maxPerMint();
+
+        // Gets presale active
+        this.presaleActive = await this.contract.presaleActive();
 
         // Fills the tokens array with the total supply
         for (let i = 0; i < this.maxPerMint; i++) {
@@ -234,7 +247,7 @@ export default {
         // Gets price
         this.price = ethers.utils.formatEther(await this.contract.price());
       } catch (e) {
-        this.openSnackbar(e.message);
+        this.openSnackbar(e?.error?.message || e.message);
       } finally {
         this.loading = false;
       }
@@ -242,19 +255,49 @@ export default {
     mint: async function () {
       try {
         this.loading = true;
-        this.numberOfTokens = Math.min(this.numberOfTokens, this.maxPerMint);
+        this.numberOfTokens = Number(
+          Math.min(Number(this.numberOfTokens), this.maxPerMint)
+        );
         const amount = ethers.utils
           .parseEther(this.price)
           .mul(this.numberOfTokens);
+
+        const args = [this.numberOfTokens];
+        const mintFunc = this.presaleActive
+          ? this.contract.presaleMint
+          : this.contract.mint;
+
+        if (this.presaleActive) {
+          const data = await this.generateProof();
+          if (!data.proof) {
+            throw new Error("Your wallet is not part of presale.");
+          }
+          args.push(data.proof);
+        }
         // see https://docs.ethers.io/v5/api/contract/contract/#Contract--write
-        const tx = await this.contract.mint(this.numberOfTokens, {
+        const tx = await mintFunc(...args, {
           value: amount,
         });
         await tx.wait();
       } catch (e) {
-        this.openSnackbar(e.message);
+        this.openSnackbar(e?.error?.message || e.message);
       } finally {
         this.loading = false;
+        this.numberOfTokens = null;
+      }
+    },
+    // Merkle Proof to veriy that the wallet belongs to the presale list
+    generateProof: async function () {
+      try {
+        const { data } = await axios.post(
+          `https://app.niftykit.com/api/drops/list/${this.collectionId}`,
+          {
+            wallet: this.user.address,
+          }
+        );
+        return data;
+      } catch (e) {
+        return { proof: null };
       }
     },
     openSnackbar: function (msg) {
