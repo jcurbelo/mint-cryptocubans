@@ -324,6 +324,14 @@ export default {
   background: #480058;
 }
 
+p {
+  color: #480058;
+}
+
+p::selection {
+  color: #fff;
+}
+
 #cc-gif {
   background-image: url("~@/assets/images/cryptocubans.gif");
 }
