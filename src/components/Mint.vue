@@ -143,19 +143,19 @@
                       SMART CONTRACT
                     </v-btn>
                   </v-col>
-                  <!-- <v-col sm="12" cols="12" md="6">
+                  <v-col sm="12" cols="12" md="6">
                     <v-btn
                       class="default-button button-filled"
                       elevation="2"
                       rounded
                       x-large
                       v-on:click="connectWallet"
-                      :href="'https://etherscan.io/token/' + contractAddress"
+                      :href="'https://opensea.io/collection/cryptocuban-social-club-v2'"
                       target="_blank"
                     >
                       OPENSEA
                     </v-btn>
-                  </v-col> -->
+                  </v-col>
                 </v-row>
               </div>
             </div>
