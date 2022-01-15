@@ -257,12 +257,7 @@ export default {
         // Gets price
         this.price = ethers.utils.formatEther(await this.contract.price());
       } catch (e) {
-        // checks if the user has metamask installed
-        if (e?.reason === "missing provider") {
-          this.openSnackbar("Please install the MetaMask extension. If you are on mobile, open your MetaMask app and browse to this page.");
-        } else {
-          this.openSnackbar(e?.error?.message || e.message);
-        }
+        this.handleError(e);
       } finally {
         this.loading = false;
       }
@@ -294,8 +289,11 @@ export default {
           value: amount,
         });
         await tx.wait();
+
+        // Minted successfully
+        this.totalSupply = await this.contract.totalSupply();
       } catch (e) {
-        this.openSnackbar(e?.error?.message || e.message);
+        this.handleError(e);
       } finally {
         this.loading = false;
         this.numberOfTokens = null;
@@ -322,6 +320,23 @@ export default {
     closeSnackbar() {
       this.snackbar = false;
       this.snackBarMsg = "";
+    },
+    handleError: function (e) {
+      const msg = e?.error?.message || e.message;
+      // checks if the user has metamask installed
+      if (msg.includes("missing provider")) {
+        this.openSnackbar(
+          "Please install the MetaMask extension. If you are on mobile, open your MetaMask app and browse to this page."
+        );
+        return;
+      }
+
+      if (msg.includes("err: insufficient funds for gas * price + value")) {
+        this.openSnackbar("You do not have enough balance.");
+        return;
+      }
+
+      this.openSnackbar(msg);
     },
   },
   beforeMount() {},
