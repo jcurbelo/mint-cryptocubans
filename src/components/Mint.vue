@@ -257,7 +257,12 @@ export default {
         // Gets price
         this.price = ethers.utils.formatEther(await this.contract.price());
       } catch (e) {
-        this.openSnackbar(e?.error?.message || e.message);
+        // checks if the user has metamask installed
+        if (e?.reason === "missing provider") {
+          this.openSnackbar("Please install the MetaMask extension. If you are on mobile, open your MetaMask app and browse to this page.");
+        } else {
+          this.openSnackbar(e?.error?.message || e.message);
+        }
       } finally {
         this.loading = false;
       }
