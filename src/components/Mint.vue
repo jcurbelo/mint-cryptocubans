@@ -2,12 +2,18 @@
   <div class="white-b" id="main">
     <loading-screen v-if="!mounted" />
     <v-snackbar v-model="snackbar" :timeout="-1">
-      <p style="font-size: 2rem; color: white;">
+      <p style="font-size: 2rem; color: white">
         {{ snackBarMsg }}
       </p>
 
       <template v-slot:action="{ attrs }">
-        <v-btn color="pink" text v-bind="attrs" @click="closeSnackbar" style="font-size: 2rem;">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="closeSnackbar"
+          style="font-size: 2rem"
+        >
           X
         </v-btn>
       </template>
@@ -96,7 +102,8 @@
                         label="MINT"
                         solo
                         v-on:change="mint"
-                      ></v-select>
+                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                 </div>
