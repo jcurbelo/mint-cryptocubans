@@ -2,10 +2,13 @@
   <div class="white-b" id="main">
     <loading-screen v-if="!mounted" />
     <v-snackbar v-model="snackbar" :timeout="-1">
-      {{ snackBarMsg }}
+      <p style="font-size: 2rem; color: white;">
+        {{ snackBarMsg }}
+      </p>
+
       <template v-slot:action="{ attrs }">
-        <v-btn color="pink" text v-bind="attrs" @click="closeSnackbar">
-          Close
+        <v-btn color="pink" text v-bind="attrs" @click="closeSnackbar" style="font-size: 2rem;">
+          X
         </v-btn>
       </template>
     </v-snackbar>
@@ -345,7 +348,7 @@ p::selection {
   min-width: none !important;
 }
 
-.v-snack__wrapper {
+::v-deep .v-snack__wrapper {
   font-size: 2rem !important;
 }
 </style>
