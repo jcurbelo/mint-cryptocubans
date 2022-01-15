@@ -2315,3 +2315,8 @@ _:-ms-fullscreen,
     vertical-align: middle;
     display: inline-block;
 }
+
+.v-list-item__title, .v-label, .v-select__selection {
+    font-size: 2rem !important;
+    font-weight: 500 !important;
+}
