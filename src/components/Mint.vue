@@ -18,6 +18,27 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-dialog v-model="dialog" max-width="500">
+      <v-card>
+        <v-card-title class="text-h5">
+          <p> <strong>Congrats! <br> Your mint was successful!</strong> </p>
+        </v-card-title>
+
+        <v-card-text>
+          <p> <small> Welcome to the Cryptocubans family! </small> </p>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn class="mb-4" color="green darken-1" text @click="dialog = false" style="font-size: 2rem">
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- LEFT CONTENT -->
     <div class="left-content noselect">
       <!-- INNER CONTENT -->
@@ -180,6 +201,7 @@ export default {
       snackbar: false,
       snackBarMsg: "",
       presaleActive: false,
+      dialog: false,
     };
   },
   methods: {
@@ -292,6 +314,7 @@ export default {
 
         // Minted successfully
         this.totalSupply = await this.contract.totalSupply();
+        this.dialog = true;
       } catch (e) {
         this.handleError(e);
       } finally {
