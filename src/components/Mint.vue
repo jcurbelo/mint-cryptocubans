@@ -130,26 +130,24 @@
                 </div>
                 <div class="seperator-line"></div>
                 <v-row align="center" justify="space-around">
-                  <v-col sm="12" cols="12" md="12">
+                  <v-col sm="12" md="6">
                     <v-btn
                       class="default-button button-filled"
                       elevation="2"
                       rounded
                       x-large
-                      v-on:click="connectWallet"
                       :href="'https://etherscan.io/token/' + contractAddress"
                       target="_blank"
                     >
                       SMART CONTRACT
                     </v-btn>
                   </v-col>
-                  <v-col sm="12" cols="12" md="6">
+                  <v-col sm="12" md="6">
                     <v-btn
                       class="default-button button-filled"
                       elevation="2"
                       rounded
                       x-large
-                      v-on:click="connectWallet"
                       :href="'https://opensea.io/collection/cryptocuban-social-club'"
                       target="_blank"
                     >
