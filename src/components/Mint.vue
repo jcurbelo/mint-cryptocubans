@@ -150,7 +150,7 @@
                       rounded
                       x-large
                       v-on:click="connectWallet"
-                      :href="'https://opensea.io/collection/cryptocuban-social-club-v2'"
+                      :href="'https://opensea.io/collection/cryptocuban-social-club'"
                       target="_blank"
                     >
                       OPENSEA
