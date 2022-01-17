@@ -121,17 +121,18 @@
                 </div>
                 <v-alert
                   v-if="isWhitelist"
-                  color="blue-grey"
+                  color="#480058"
                   dark
                   dense
                   prominent
                 >
-                  Congratulations, your wallet made it to the whitelist!
-                  You can now mint up to {{maxPerWallet}} Cryptocubans.
-                  <br>
+                  Congratulations, your wallet made it to the whitelist! You can
+                  now mint up to {{ maxPerWallet }} Cryptocubans.
+                  <br />
 
                   <strong>
-                    # NFTs minted by you so far: {{ balanceOf }} / {{ maxPerWallet }}
+                    # NFTs minted by you so far: {{ balanceOf }} /
+                    {{ maxPerWallet }}
                   </strong>
                 </v-alert>
                 <div class="seperator-line"></div>
@@ -324,7 +325,7 @@ export default {
         this.presaleActive = await this.contract.presaleActive();
 
         // Fills the tokens array with the total supply
-        for (let i = 0; i < this.maxPerMint; i++) {
+        for (let i = 0; i < this.maxPerMint - this.balanceOf; i++) {
           this.tokens.push(i + 1);
         }
 
@@ -375,6 +376,11 @@ export default {
         this.balanceOf = await this.contract.balanceOf(this.user.address);
 
         this.isBlocked = this.balanceOf >= this.maxPerWallet;
+
+        // Fills the tokens array with the total supply
+        for (let i = 0; i < this.maxPerMint - this.balanceOf; i++) {
+          this.tokens.push(i + 1);
+        }
         this.dialog = true;
       } catch (e) {
         this.handleError(e);
