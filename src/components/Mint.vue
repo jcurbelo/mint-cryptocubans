@@ -22,17 +22,28 @@
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
         <v-card-title class="text-h5">
-          <p> <strong>Congrats! <br> Your mint was successful!</strong> </p>
+          <p>
+            <strong
+              >Congrats! <br />
+              Your mint was successful!</strong
+            >
+          </p>
         </v-card-title>
 
         <v-card-text>
-          <p> <small> Welcome to the Cryptocubans family! </small> </p>
+          <p><small> Welcome to the Cryptocubans family! </small></p>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn class="mb-4" color="green darken-1" text @click="dialog = false" style="font-size: 2rem">
+          <v-btn
+            class="mb-4"
+            color="green darken-1"
+            text
+            @click="dialog = false"
+            style="font-size: 2rem"
+          >
             Close
           </v-btn>
         </v-card-actions>
@@ -108,8 +119,23 @@
                   </p>
                   <p><strong>Price: </strong> {{ price }} ETH + gas</p>
                 </div>
+                <v-alert
+                  v-if="isWhitelist"
+                  color="blue-grey"
+                  dark
+                  dense
+                  prominent
+                >
+                  Congratulations, your wallet made it to the whitelist!
+                  You can now mint up to {{maxPerWallet}} Cryptocubans.
+                  <br>
+
+                  <strong>
+                    # NFTs minted by you so far: {{ balanceOf }} / {{ maxPerWallet }}
+                  </strong>
+                </v-alert>
                 <div class="seperator-line"></div>
-                <div>
+                <div v-if="!isBlocked">
                   <v-row>
                     <v-col>
                       <v-select
@@ -127,6 +153,15 @@
                       </v-select>
                     </v-col>
                   </v-row>
+                </div>
+                <div v-else>
+                  <v-alert color="green" dense type="info">
+                    <strong>
+                      You have reached the maximum amount of NFTs you can mint.
+                      <br />
+                      ({{ maxPerWallet }} NFTs)
+                    </strong>
+                  </v-alert>
                 </div>
                 <div class="seperator-line"></div>
                 <v-row align="center" justify="space-around">
@@ -181,7 +216,8 @@ export default {
   },
   data: () => {
     return {
-      maxPerMint: 0,
+      maxPerMint: 1,
+      maxPerWallet: 1,
       numberOfTokens: null,
       price: 0,
       maxAmount: 0,
@@ -200,6 +236,9 @@ export default {
       snackBarMsg: "",
       presaleActive: false,
       dialog: false,
+      isWhitelist: false,
+      balanceOf: 0,
+      isBlocked: false,
     };
   },
   methods: {
@@ -264,7 +303,22 @@ export default {
         this.maxAmount = await this.contract.maxAmount();
 
         // Gets max per mint
-        this.maxPerMint = await this.contract.maxPerMint();
+        // this.maxPerMint = await this.contract.maxPerMint();
+
+        // Gets max per wallet
+        // this.maxPerWallet = await this.contract.maxPerWallet();
+
+        // Gets balance of the current address
+        this.balanceOf = await this.contract.balanceOf(this.user.address);
+
+        const data = await this.generateProof();
+        if (data.proof) {
+          this.isWhitelist = true;
+          this.maxPerMint = 3;
+          this.maxPerWallet = 3;
+        }
+
+        this.isBlocked = this.balanceOf >= this.maxPerWallet;
 
         // Gets presale active
         this.presaleActive = await this.contract.presaleActive();
@@ -285,6 +339,12 @@ export default {
     mint: async function () {
       try {
         this.loading = true;
+
+        if (this.isBlocked) {
+          throw new Error(
+            "You have reached the maximum amount of tokens you can mint."
+          );
+        }
         this.numberOfTokens = Number(
           Math.min(Number(this.numberOfTokens), this.maxPerMint)
         );
@@ -312,6 +372,9 @@ export default {
 
         // Minted successfully
         this.totalSupply = await this.contract.totalSupply();
+        this.balanceOf = await this.contract.balanceOf(this.user.address);
+
+        this.isBlocked = this.balanceOf >= this.maxPerWallet;
         this.dialog = true;
       } catch (e) {
         this.handleError(e);
