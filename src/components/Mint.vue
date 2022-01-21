@@ -120,14 +120,12 @@
                   <p><strong>Price: </strong> {{ price }} ETH + gas</p>
                 </div>
                 <v-alert
-                  v-if="isWhitelist"
                   color="#480058"
                   dark
                   dense
                   prominent
                 >
-                  Congratulations, your wallet made it to the whitelist! You can
-                  now mint up to {{ maxPerWallet }} Cryptocubans.
+                  You can now mint up to {{ maxPerWallet }} Cryptocubans.
                   <br />
 
                   <strong>
@@ -217,8 +215,8 @@ export default {
   },
   data: () => {
     return {
-      maxPerMint: 1,
-      maxPerWallet: 1,
+      maxPerMint: 0,
+      maxPerWallet: 0,
       numberOfTokens: null,
       price: 0,
       maxAmount: 0,
@@ -237,7 +235,6 @@ export default {
       snackBarMsg: "",
       presaleActive: false,
       dialog: false,
-      isWhitelist: false,
       balanceOf: 0,
       isBlocked: false,
     };
@@ -304,20 +301,13 @@ export default {
         this.maxAmount = await this.contract.maxAmount();
 
         // Gets max per mint
-        // this.maxPerMint = await this.contract.maxPerMint();
+        this.maxPerMint = await this.contract.maxPerMint();
 
         // Gets max per wallet
-        // this.maxPerWallet = await this.contract.maxPerWallet();
+        this.maxPerWallet = await this.contract.maxPerWallet();
 
         // Gets balance of the current address
         this.balanceOf = await this.contract.balanceOf(this.user.address);
-
-        const data = await this.generateProof();
-        if (data.proof) {
-          this.isWhitelist = true;
-          this.maxPerMint = 3;
-          this.maxPerWallet = 3;
-        }
 
         this.isBlocked = this.balanceOf >= this.maxPerWallet;
 
